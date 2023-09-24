@@ -1,5 +1,5 @@
 # ⚙️ Webscraping com Selenium
-O objetivo desse case é extrair os dados de todos os itens da primeira página da categoria de Consoles no site da Magalu e exporta-los para uma planilha do Excel.
+O objetivo desse case é extrair os dados de todos os itens da primeira página da categoria de Consoles no site da Magalu e exportá-los para uma planilha do Excel.
 
 > Webscraping é uma técnica de coleta de dados de plataformas online, como sites, redes sociais etc.
 
