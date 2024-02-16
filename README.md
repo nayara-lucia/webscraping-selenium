@@ -1,5 +1,5 @@
 # ⚙️ Webscraping com Selenium
-O objetivo desse case é extrair os dados de todos os itens da primeira página da categoria de Consoles no site da Magalu e exportá-los para uma planilha do Excel.
+O objetivo desse case é extrair os dados de todos os smartphones samsung no site da magalu e exportá-los para uma planilha do google sheets.
 
 > Webscraping é uma técnica de coleta de dados de plataformas online, como sites, redes sociais etc.
 
@@ -14,23 +14,18 @@ O objetivo desse case é extrair os dados de todos os itens da primeira página 
 
 ### Etapas do Projeto:
 
-1- Abrir o Chrome e direcionar p/ o site da Magalu
+1. Inicialização do WebDriver: Inicia-se uma instância do WebDriver do Chrome.
 
-2- No search com <strong>Pyautogui</strong> procurar por console e dar "enter"
+2. Acesso à Categoria de Celulares Samsung: Navega-se até a categoria de celulares da Samsung no site da Magazine Luiza usando o método get() do WebDriver.
 
-3- Identificar a class name das caixinhas de produto inspencionando a página
+3. Coleta de Produtos: Define-se uma função chamada coletar_produtos(pagina) para extrair os dados dos produtos da página atual. Dentro desta função, os produtos são coletados e seus nomes e preços são extraídos usando seletores de classe específicos.
 
-3- Para cada caixinha de produto identificar sua class name e extrair nome, preco e url
+4. Loop para Coleta de Dados: Inicia-se um loop while para coletar os dados de três páginas de produtos. Dentro do loop, os produtos da página atual são coletados usando a função coletar_produtos(). Os dados são então divididos em nomes e preços e adicionados a um DataFrame temporário. Este DataFrame temporário é então concatenado com um DataFrame principal que armazena todos os dados coletados.
 
-4- Armazenar os dados em um Dataframe
+5. Navegação para a Próxima Página: Dentro do loop, o WebDriver localiza e clica no botão para ir para a próxima página de produtos.
 
-5- Criar um arquivo Excel com a engine <strong>xlsxwriter</strong>
-
-6- Pegar os dados armazenados no Dataframe e armazenar na planilha criada
-
-7- Salvar
-
-<strong>BONUS</strong>: Na planilha Excel editar os delimitadores
+6. Integração com Google Sheets: Os dados coletados são então transferidos para uma planilha do Google Sheets usando a biblioteca gspread e a função set_with_dataframe().
+   
 ### Resultado 🌟
 
 
