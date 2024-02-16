@@ -2,71 +2,86 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pyautogui as pa
 import pandas as pd
+from selenium.webdriver.common.by import By
+import gspread
+from gspread_dataframe import set_with_dataframe
 
 navegador = webdriver.Chrome()
+#Entra na categoria celulares da samsung
+navegador.get("https://www.magazineluiza.com.br/smartphone/celulares-e-smartphones/s/te/tcsp/brand---samsung/")
+# Abre o site
+pagina = navegador.current_url
 
+pa.sleep(4) # Carrega pagina
 
-navegador.get("https://www.magazineluiza.com.br") # Abre o site
+def coletar_produtos(pagina):
 
-navegador.find_element(By.ID, "input-search").send_keys("console") # Procura
+    lista_produtos = navegador.find_elements(By.CLASS_NAME, "#")
+    df_lista = []
 
-pa.sleep(2)
-pa.press("enter")
-pa.sleep(10)
-
-
-listaProdutos = navegador.find_elements(By.CLASS_NAME, "eJDyHN")
-
-df_lista = []
-
-for item in listaProdutos:
-
-    nomeProduto = ""
-    precoProduto = ""
-    urlProduto = ""
-
-    if nomeProduto == "":
+    for item in lista_produtos:
+        nome_produto = ""
+        preco_produto = ""
+        url_produto = ""
 
         try:
-            nomeProduto = item.find_element(By.CLASS_NAME, "uaEbk").text
-
+            nome_produto = item.find_element(By.CLASS_NAME, "#").text
         except Exception:
             pass
- #---------------------------------------------------------------------------------
-    if precoProduto == "":
 
         try:
-            precoProduto = item.find_element(By.CLASS_NAME, "kXWuGr").text
-
+            preco_produto = item.find_element(By.CLASS_NAME, "#").text
         except Exception:
             pass
-# ---------------------------------------------------------------------------------
-    if urlProduto == "":
 
-        try:
-            urlProduto = item.find_element(By.TAG_NAME, "a").get_attribute("href")
+        dados_linha = f"{nome_produto};{preco_produto}"
+        print(dados_linha)
+        df_lista.append(dados_linha)
 
-        except Exception:
-            pass
-# ---------------------------------------------------------------------------------
-
-    print(nomeProduto, precoProduto, urlProduto)
-
-    dadosLinha = nomeProduto + ";" + precoProduto + ";" + urlProduto
-    df_lista.append(dadosLinha) # Populando o DF
+    return df_lista
 
 
-# Cria a planilha e Prepara o arquivo do Excel usando xlsxwriter com mecanismo
-arquivoExcel = pd.ExcelWriter('consoles_magazine.xlsx', engine='xlsxwriter')
+cont = 0
+df = pd.DataFrame(columns=['Produto', 'Preço'])
+while cont < 3:
+    # Coleta os produtos da página atual
+    produtos_pagina_atual = coletar_produtos(pagina)
+    produtos = []
+    precos = []
 
-# Puxando os dados pra planilha
-planilha_dados = pd.DataFrame(df_lista, columns=['Nome;Preco;URL'])
+    for item in produtos_pagina_atual:
+        produto, preco = item.split(';')
+        produtos.append(produto)
+        precos.append(preco)
 
-# Joga nossos dados dentro do Arquivo excel criado e salva
-planilha_dados.to_excel(arquivoExcel,sheet_name='Sheet1', index=False)
+    df_temporario = pd.DataFrame({'Produto': produtos, 'Preço': precos})
 
-arquivoExcel.close() #Salva os dados no arquivos
+    # Adiciona os dados do DataFrame temporário ao DataFrame principal
+    df = pd.concat([df, df_temporario], ignore_index=True)
 
+    # Verifica se há uma próxima página
+    try:
+        proxima_pagina = navegador.find_element(By.CLASS_NAME, '#')
+        proxima_pagina.click()
+        pa.sleep(4)
+        cont += 1
+    except:
+        # Se não houver mais páginas, saia do loop
+        break
+
+
+# Planilha
+from senha import code_
+CODE = code_
+
+gc = gspread.service_account(filename='#.json')
+sh = gc.open_by_key(CODE)
+
+DICT = {}
+WSS = sh.worksheets()
+
+set_with_dataframe(worksheet=WSS[0], dataframe=df, include_index=False,
+                    include_column_header=True, resize=True)
 
 
 
