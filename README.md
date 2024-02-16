@@ -31,7 +31,10 @@ O objetivo desse case é extrair os dados de todos os smartphones samsung no sit
 
 
 
-https://github.com/nayara-lucia/webscraping-selenium/assets/126920974/bd4c2395-531f-4fb8-90dd-22a29e95ea90
+
+https://github.com/nayara-lucia/webscraping-selenium/assets/126920974/bd8373eb-4867-435a-b48f-db02873bd3ad
+
+
 
 
 
